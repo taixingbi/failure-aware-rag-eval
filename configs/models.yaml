@@ -1,0 +1,36 @@
+decode:
+  temperature: 0
+  top_p: 1.0
+  max_tokens: 256
+
+# Judge responses include a free-text reason; allow more tokens to avoid truncation.
+judge_max_tokens: 512
+
+# Concurrent in-flight requests while running a single model
+concurrency_per_model: 4
+
+models:
+  - slug: qwen
+    model_id: Qwen/Qwen2.5-7B-Instruct
+    enabled: true
+  - slug: llama
+    model_id: llama
+    enabled: true
+  - slug: gpt_oss
+    model_id: gpt-oss
+    enabled: true
+  # Temporarily disabled until Anthropic use-case / Bedrock marketplace access is approved.
+  - slug: claude
+    model_id: claude-sonnet-5
+    enabled: false
+  - slug: deepseek
+    model_id: deepseek
+    enabled: true
+  - slug: nova
+    model_id: nova-pro
+    enabled: true
+
+judges:
+  # claude-sonnet-5 unavailable on this account; dual-judge with available models.
+  primary: gpt-oss
+  secondary: deepseek

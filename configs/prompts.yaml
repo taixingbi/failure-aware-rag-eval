@@ -1,0 +1,76 @@
+system: |
+  You are answering a question using only the provided evidence.
+
+  Rules:
+  1. Use only the provided evidence.
+  2. If the evidence is insufficient, answer "INSUFFICIENT_EVIDENCE".
+  3. If documents conflict, prefer the evidence explicitly marked as authoritative.
+  4. Cite the supporting chunk IDs.
+  5. Do not use outside knowledge.
+
+  Return ONLY valid JSON with this schema:
+  {
+    "answer": "...",
+    "citations": ["chunk_1"],
+    "abstained": false
+  }
+
+user_template: |
+  Question:
+  {question}
+
+  Evidence:
+  {evidence}
+
+  Return JSON:
+  {{
+    "answer": "...",
+    "citations": ["chunk_1"],
+    "abstained": false
+  }}
+
+judge_system: |
+  You are an impartial evaluator for retrieval-augmented generation answers.
+  Score only from the provided inputs. Do not use outside knowledge.
+  Return ONLY valid JSON.
+
+judge_user_template: |
+  Evaluate the model response.
+
+  Question:
+  {question}
+
+  Gold answer (for accuracy only; ignore for relevance):
+  {gold_answer}
+
+  Model answer:
+  {model_answer}
+
+  Model citations:
+  {citations}
+
+  Retrieved contexts:
+  {contexts}
+
+  Expected behavior: {expected_behavior}
+  Answer available in contexts: {answer_available}
+
+  Scoring rules:
+  - accuracy: 1 if the model answer is correct given the gold answer and expected behavior
+    (for abstain cases, accuracy=1 only if the model abstains with INSUFFICIENT_EVIDENCE);
+    otherwise 0.
+  - relevance: 1.0 directly answers the question; 0.5 partially; 0.0 unrelated/evasive.
+    Do NOT use the gold answer for relevance.
+  - faithfulness: fraction of factual claims in the model answer supported by the contexts
+    (0.0-1.0). If abstained correctly, faithfulness=1.0.
+  - citation_accuracy: if citations is empty/null, return null (N/A). Otherwise fraction of
+    cited chunks that actually support the answer (0.0-1.0).
+
+  Return JSON:
+  {{
+    "accuracy": 0,
+    "relevance": 0.0,
+    "faithfulness": 0.0,
+    "citation_accuracy": null,
+    "reason": "..."
+  }}

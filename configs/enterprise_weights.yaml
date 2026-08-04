@@ -1,0 +1,9 @@
+missing_evidence: 0.30
+conflict: 0.25
+hard_negative: 0.15
+noise: 0.10
+boundary: 0.10
+evidence_position: 0.10
+
+# Utility(M) = EnterpriseScore(M) - lambda * NormalizedCost(M)
+cost_lambda: 1.0

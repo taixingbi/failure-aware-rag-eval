@@ -1,0 +1,220 @@
+Using enabled models ['deepseek', 'gpt_oss', 'llama', 'nova', 'qwen']: 900/900 rows
+evaluate:   0%|          | 0/900 [00:00<?, ?it/s]evaluate: 100%|██████████| 900/900 [00:00<00:00, 1247892.10it/s]
+{
+  "models": {
+    "deepseek": {
+      "clean": {
+        "accuracy": 1.0,
+        "relevance": null,
+        "faithfulness": null,
+        "citation_accuracy": null
+      },
+      "failure_accuracy": {
+        "missing_evidence": 0.9,
+        "conflict": 1.0,
+        "hard_negative": 0.9,
+        "boundary": 1.0,
+        "noise": 0.9,
+        "evidence_position": 0.95
+      },
+      "failure_behavior": {
+        "MAR": 0.9,
+        "CRS": 0.95,
+        "HNR": 0.9,
+        "NRS": 0.9,
+        "BRS": 1.0,
+        "NoiseDrop": 0.09999999999999998,
+        "PositionDrop": 0.050000000000000044,
+        "position_accuracy": {
+          "first": 1.0,
+          "middle": 0.9,
+          "last": 0.95
+        }
+      },
+      "n": {
+        "clean": 20,
+        "missing_evidence": 20,
+        "conflict": 20,
+        "hard_negative": 20,
+        "boundary": 20,
+        "noise": 20,
+        "evidence_position": 60
+      }
+    },
+    "gpt_oss": {
+      "clean": {
+        "accuracy": 1.0,
+        "relevance": null,
+        "faithfulness": null,
+        "citation_accuracy": null
+      },
+      "failure_accuracy": {
+        "missing_evidence": 0.85,
+        "conflict": 1.0,
+        "hard_negative": 0.9,
+        "boundary": 0.9375,
+        "noise": 1.0,
+        "evidence_position": 1.0
+      },
+      "failure_behavior": {
+        "MAR": 0.85,
+        "CRS": 0.85,
+        "HNR": 0.9,
+        "NRS": 1.0,
+        "BRS": 0.9375,
+        "NoiseDrop": 0.0,
+        "PositionDrop": 0.0,
+        "position_accuracy": {
+          "first": 1.0,
+          "middle": 1.0,
+          "last": 1.0
+        }
+      },
+      "n": {
+        "clean": 20,
+        "missing_evidence": 20,
+        "conflict": 20,
+        "hard_negative": 20,
+        "boundary": 20,
+        "noise": 20,
+        "evidence_position": 60
+      }
+    },
+    "llama": {
+      "clean": {
+        "accuracy": 1.0,
+        "relevance": null,
+        "faithfulness": null,
+        "citation_accuracy": null
+      },
+      "failure_accuracy": {
+        "missing_evidence": 0.75,
+        "conflict": 1.0,
+        "hard_negative": 0.4,
+        "boundary": 1.0,
+        "noise": 1.0,
+        "evidence_position": 1.0
+      },
+      "failure_behavior": {
+        "MAR": 0.75,
+        "CRS": 0.85,
+        "HNR": 0.4,
+        "NRS": 1.0,
+        "BRS": 1.0,
+        "NoiseDrop": 0.0,
+        "PositionDrop": 0.0,
+        "position_accuracy": {
+          "first": 1.0,
+          "middle": 1.0,
+          "last": 1.0
+        }
+      },
+      "n": {
+        "clean": 20,
+        "missing_evidence": 20,
+        "conflict": 20,
+        "hard_negative": 20,
+        "boundary": 20,
+        "noise": 20,
+        "evidence_position": 60
+      }
+    },
+    "nova": {
+      "clean": {
+        "accuracy": 1.0,
+        "relevance": null,
+        "faithfulness": null,
+        "citation_accuracy": null
+      },
+      "failure_accuracy": {
+        "missing_evidence": 0.85,
+        "conflict": 0.7368421052631579,
+        "hard_negative": 0.9,
+        "boundary": 1.0,
+        "noise": 1.0,
+        "evidence_position": 1.0
+      },
+      "failure_behavior": {
+        "MAR": 0.85,
+        "CRS": 0.7,
+        "HNR": 0.9,
+        "NRS": 1.0,
+        "BRS": 1.0,
+        "NoiseDrop": 0.0,
+        "PositionDrop": 0.0,
+        "position_accuracy": {
+          "first": 1.0,
+          "middle": 1.0,
+          "last": 1.0
+        }
+      },
+      "n": {
+        "clean": 20,
+        "missing_evidence": 20,
+        "conflict": 20,
+        "hard_negative": 20,
+        "boundary": 20,
+        "noise": 20,
+        "evidence_position": 60
+      }
+    },
+    "qwen": {
+      "clean": {
+        "accuracy": 1.0,
+        "relevance": null,
+        "faithfulness": null,
+        "citation_accuracy": null
+      },
+      "failure_accuracy": {
+        "missing_evidence": 0.9,
+        "conflict": 0.2,
+        "hard_negative": 0.75,
+        "boundary": 0.8421052631578947,
+        "noise": 0.65,
+        "evidence_position": 0.8333333333333334
+      },
+      "failure_behavior": {
+        "MAR": 0.9,
+        "CRS": 0.15,
+        "HNR": 0.75,
+        "NRS": 0.65,
+        "BRS": 0.8421052631578947,
+        "NoiseDrop": 0.35,
+        "PositionDrop": 0.15000000000000002,
+        "position_accuracy": {
+          "first": 1.0,
+          "middle": 0.65,
+          "last": 0.85
+        }
+      },
+      "n": {
+        "clean": 20,
+        "missing_evidence": 20,
+        "conflict": 20,
+        "hard_negative": 20,
+        "boundary": 20,
+        "noise": 20,
+        "evidence_position": 60
+      }
+    }
+  },
+  "parse_rates": {
+    "deepseek": 1.0,
+    "gpt_oss": 0.9611111111111111,
+    "llama": 0.9388888888888889,
+    "nova": 1.0,
+    "qwen": 0.9944444444444445
+  },
+  "error_rates": {
+    "deepseek": 0.0,
+    "gpt_oss": 0.0,
+    "llama": 0.0,
+    "nova": 0.0,
+    "qwen": 0.005555555555555556
+  },
+  "judge_stats": {
+    "n_judged": 0,
+    "agreement_rate": null,
+    "human_review_rate": null
+  }
+}

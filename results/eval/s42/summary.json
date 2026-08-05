@@ -1,0 +1,218 @@
+{
+  "models": {
+    "deepseek": {
+      "clean": {
+        "accuracy": 0.9866666666666667,
+        "relevance": 1.0,
+        "faithfulness": 1.0,
+        "citation_accuracy": 1.0
+      },
+      "failure_accuracy": {
+        "missing_evidence": 0.84,
+        "conflict": 0.9733333333333334,
+        "hard_negative": 0.8933333333333333,
+        "boundary": 0.92,
+        "noise": 0.9333333333333333,
+        "evidence_position": 0.96
+      },
+      "failure_behavior": {
+        "MAR": 0.84,
+        "CRS": 0.92,
+        "HNR": 0.8933333333333333,
+        "NRS": 0.9459459459459459,
+        "BRS": 0.9324324324324325,
+        "NoiseDrop": 0.053333333333333344,
+        "PositionDrop": 0.026666666666666727,
+        "position_accuracy": {
+          "first": 0.9866666666666667,
+          "middle": 0.9333333333333333,
+          "last": 0.96
+        }
+      },
+      "n": {
+        "clean": 75,
+        "missing_evidence": 75,
+        "conflict": 75,
+        "hard_negative": 75,
+        "boundary": 75,
+        "noise": 75,
+        "evidence_position": 225
+      }
+    },
+    "gpt_oss": {
+      "clean": {
+        "accuracy": 0.9733333333333334,
+        "relevance": 0.9666666666666667,
+        "faithfulness": 0.9733333333333334,
+        "citation_accuracy": 1.0
+      },
+      "failure_accuracy": {
+        "missing_evidence": 0.76,
+        "conflict": 0.9466666666666667,
+        "hard_negative": 0.8666666666666667,
+        "boundary": 0.7866666666666666,
+        "noise": 0.9733333333333334,
+        "evidence_position": 0.9733333333333334
+      },
+      "failure_behavior": {
+        "MAR": 0.76,
+        "CRS": 0.8933333333333333,
+        "HNR": 0.8666666666666667,
+        "NRS": 1.0,
+        "BRS": 0.8082191780821917,
+        "NoiseDrop": 0.0,
+        "PositionDrop": 0.0,
+        "position_accuracy": {
+          "first": 0.9733333333333334,
+          "middle": 0.9733333333333334,
+          "last": 0.9733333333333334
+        }
+      },
+      "n": {
+        "clean": 75,
+        "missing_evidence": 75,
+        "conflict": 75,
+        "hard_negative": 75,
+        "boundary": 75,
+        "noise": 75,
+        "evidence_position": 225
+      }
+    },
+    "llama": {
+      "clean": {
+        "accuracy": 0.9733333333333334,
+        "relevance": 0.9866666666666667,
+        "faithfulness": 0.9866666666666667,
+        "citation_accuracy": 0.9866666666666667
+      },
+      "failure_accuracy": {
+        "missing_evidence": 0.7466666666666667,
+        "conflict": 0.9733333333333334,
+        "hard_negative": 0.3466666666666667,
+        "boundary": 0.9066666666666666,
+        "noise": 1.0,
+        "evidence_position": 0.96
+      },
+      "failure_behavior": {
+        "MAR": 0.7466666666666667,
+        "CRS": 0.92,
+        "HNR": 0.3466666666666667,
+        "NRS": 1.0273972602739725,
+        "BRS": 0.9315068493150684,
+        "NoiseDrop": -0.026666666666666616,
+        "PositionDrop": 0.040000000000000036,
+        "position_accuracy": {
+          "first": 0.9733333333333334,
+          "middle": 0.9733333333333334,
+          "last": 0.9333333333333333
+        }
+      },
+      "n": {
+        "clean": 75,
+        "missing_evidence": 75,
+        "conflict": 75,
+        "hard_negative": 75,
+        "boundary": 75,
+        "noise": 75,
+        "evidence_position": 225
+      }
+    },
+    "nova": {
+      "clean": {
+        "accuracy": 1.0,
+        "relevance": 0.9933333333333333,
+        "faithfulness": 0.9933333333333333,
+        "citation_accuracy": 1.0
+      },
+      "failure_accuracy": {
+        "missing_evidence": 0.7066666666666667,
+        "conflict": 0.7866666666666666,
+        "hard_negative": 0.84,
+        "boundary": 0.8933333333333333,
+        "noise": 0.9733333333333334,
+        "evidence_position": 0.9866666666666667
+      },
+      "failure_behavior": {
+        "MAR": 0.7066666666666667,
+        "CRS": 0.72,
+        "HNR": 0.84,
+        "NRS": 0.9733333333333334,
+        "BRS": 0.8933333333333333,
+        "NoiseDrop": 0.026666666666666616,
+        "PositionDrop": -0.013333333333333308,
+        "position_accuracy": {
+          "first": 0.9733333333333334,
+          "middle": 1.0,
+          "last": 0.9866666666666667
+        }
+      },
+      "n": {
+        "clean": 75,
+        "missing_evidence": 75,
+        "conflict": 75,
+        "hard_negative": 75,
+        "boundary": 75,
+        "noise": 75,
+        "evidence_position": 225
+      }
+    },
+    "qwen": {
+      "clean": {
+        "accuracy": 0.96,
+        "relevance": 0.9333333333333333,
+        "faithfulness": 0.9466666666666667,
+        "citation_accuracy": 1.0
+      },
+      "failure_accuracy": {
+        "missing_evidence": 0.7866666666666666,
+        "conflict": 0.28,
+        "hard_negative": 0.7466666666666667,
+        "boundary": 0.72,
+        "noise": 0.6533333333333333,
+        "evidence_position": 0.8088888888888889
+      },
+      "failure_behavior": {
+        "MAR": 0.7866666666666666,
+        "CRS": 0.22666666666666666,
+        "HNR": 0.7466666666666667,
+        "NRS": 0.6805555555555556,
+        "BRS": 0.75,
+        "NoiseDrop": 0.30666666666666664,
+        "PositionDrop": 0.17333333333333334,
+        "position_accuracy": {
+          "first": 0.9866666666666667,
+          "middle": 0.6266666666666667,
+          "last": 0.8133333333333334
+        }
+      },
+      "n": {
+        "clean": 75,
+        "missing_evidence": 75,
+        "conflict": 75,
+        "hard_negative": 75,
+        "boundary": 75,
+        "noise": 75,
+        "evidence_position": 225
+      }
+    }
+  },
+  "parse_rates": {
+    "deepseek": 1.0,
+    "gpt_oss": 0.9629629629629629,
+    "llama": 0.9318518518518518,
+    "nova": 0.9955555555555555,
+    "qwen": 0.9925925925925926
+  },
+  "error_rates": {
+    "deepseek": 0.0,
+    "gpt_oss": 0.0,
+    "llama": 0.0,
+    "nova": 0.0044444444444444444,
+    "qwen": 0.005925925925925926
+  },
+  "judge_stats": {
+    "n_judged": 3375,
+    "agreement_rate": 0.7561481481481481,
+    "human_review_rate": 0.24385185185185185
+  }
+}

@@ -27,9 +27,9 @@ FAILURE_MAP = {
 FAILURE_TYPES = list(FAILURE_MAP.values())
 
 
-def download(url: str, dest: Path) -> None:
+def download(url: str, dest: Path, *, force: bool = False) -> None:
     dest.parent.mkdir(parents=True, exist_ok=True)
-    if dest.exists() and dest.stat().st_size > 0:
+    if not force and dest.exists() and dest.stat().st_size > 0:
         return
     print(f"Downloading {url}")
     with urllib.request.urlopen(url, timeout=120) as resp, dest.open("wb") as f:
@@ -66,6 +66,45 @@ def positions_to_chunk_ids(positions: list[int] | None, n: int) -> list[str]:
     return out
 
 
+def derive_boundary_gold_chunk_ids(
+    contexts: list[str],
+    *,
+    gold_answer: str | None,
+    split_sentence: str | None,
+) -> list[str]:
+    """RAGFailBench chunk_boundary has no gold_position; recover supporting chunk ids.
+
+    Prefer chunks that contain the gold answer; otherwise chunks that overlap the
+    split supporting sentence (case-insensitive substring).
+    """
+    if not contexts:
+        return []
+    gold = (gold_answer or "").strip().lower()
+    split = (split_sentence or "").strip().lower()
+
+    hits: list[str] = []
+    if gold:
+        for i, ctx in enumerate(contexts, start=1):
+            if gold in (ctx or "").lower():
+                hits.append(f"chunk_{i}")
+    if hits:
+        return hits
+
+    # Fallback: any chunk overlapping a substantial piece of the split sentence
+    if split and len(split) >= 12:
+        # use mid-length window so short split fragments still match
+        needle = split[: max(40, min(80, len(split)))]
+        for i, ctx in enumerate(contexts, start=1):
+            text = (ctx or "").lower()
+            if needle in text or (len(text) >= 20 and text in split):
+                hits.append(f"chunk_{i}")
+    if hits:
+        return hits
+
+    # Last resort for boundary: all split pieces jointly carry the evidence
+    return chunk_ids(len(contexts))
+
+
 def unify_failure(run_seed: int, clean: dict, failure: dict, canonical_type: str) -> dict:
     contexts = failure.get("contexts") or []
     n = len(contexts)
@@ -84,6 +123,14 @@ def unify_failure(run_seed: int, clean: dict, failure: dict, canonical_type: str
         gp = params.get("gold_position")
         if gp is not None and 0 <= int(gp) < n:
             gold_chunk_ids = [f"chunk_{int(gp) + 1}"]
+
+    # boundary: original operator has no gold_position — derive from contexts
+    if canonical_type == "boundary" and not gold_chunk_ids:
+        gold_chunk_ids = derive_boundary_gold_chunk_ids(
+            contexts,
+            gold_answer=failure.get("gold_answer") or clean.get("gold_answer"),
+            split_sentence=params.get("split_sentence"),
+        )
 
     return {
         "run_seed": run_seed,
@@ -114,13 +161,15 @@ def prepare_seed(
     raw_dir: Path,
     out_dir: Path,
     severity: str,
+    *,
+    force: bool = False,
 ) -> list[dict]:
     run_name = f"pilot_stability_s{run_seed}"
     base = f"{RAW_BASE}/{run_name}/6_final"
     local = raw_dir / run_name / "6_final"
 
     clean_path = local / "clean_seeds.jsonl"
-    download(f"{base}/clean_seeds.jsonl", clean_path)
+    download(f"{base}/clean_seeds.jsonl", clean_path, force=force)
     cleans = {r["sample_id"]: r for r in read_jsonl(clean_path)}
 
     # Most failures: one row per parent at the chosen severity.
@@ -131,7 +180,7 @@ def prepare_seed(
 
     for src_name, canon in FAILURE_MAP.items():
         path = local / "failures" / f"{src_name}.jsonl"
-        download(f"{base}/failures/{src_name}.jsonl", path)
+        download(f"{base}/failures/{src_name}.jsonl", path, force=force)
         all_rows = read_jsonl(path)
 
         if canon == "evidence_position":
@@ -140,7 +189,13 @@ def prepare_seed(
                 by_parent.setdefault(r["parent_seed_id"], []).append(r)
             # require all three positions for a parent to count
             position_by_parent = {
-                pid: sorted(rs, key=lambda x: (x.get("gold_position") is None, x.get("gold_position", -1)))
+                pid: sorted(
+                    rs,
+                    key=lambda x: (
+                        (x.get("parameters") or {}).get("gold_position") is None,
+                        (x.get("parameters") or {}).get("gold_position", -1),
+                    ),
+                )
                 for pid, rs in by_parent.items()
                 if len({(x.get("parameters") or {}).get("gold_position") for x in rs}) >= 3
             }
@@ -191,23 +246,33 @@ def main() -> None:
     parser.add_argument("--pilot-seed", type=int, default=42)
     parser.add_argument("--raw-dir", type=Path, default=ROOT / "data" / "raw")
     parser.add_argument("--out-dir", type=Path, default=ROOT / "data" / "benchmark")
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Re-download RAGFailBench raw jsonl even if local files exist",
+    )
     args = parser.parse_args()
 
     seeds = [int(x.strip()) for x in args.seeds.split(",") if x.strip()]
     all_paired: dict[int, list[dict]] = {}
     for seed in seeds:
-        all_paired[seed] = prepare_seed(seed, args.raw_dir, args.out_dir, args.severity)
+        all_paired[seed] = prepare_seed(
+            seed, args.raw_dir, args.out_dir, args.severity, force=args.force
+        )
 
     # pilot slice for pilot_seed
     pilot_rows = all_paired.get(args.pilot_seed) or prepare_seed(
-        args.pilot_seed, args.raw_dir, args.out_dir, args.severity
+        args.pilot_seed, args.raw_dir, args.out_dir, args.severity, force=args.force
     )
     pilot_seed_ids = sorted({r["seed_id"] for r in pilot_rows})[: args.pilot_n]
     pilot_set = set(pilot_seed_ids)
     pilot = [r for r in pilot_rows if r["seed_id"] in pilot_set]
     pilot_path = args.out_dir / f"pilot_s{args.pilot_seed}_n{args.pilot_n}.jsonl"
     write_jsonl(pilot_path, pilot)
-    print(f"Pilot: {len(pilot_seed_ids)} seeds × {len(FAILURE_TYPES)} = {len(pilot)} → {pilot_path}")
+    print(
+        f"Pilot: {len(pilot_seed_ids)} seeds × "
+        f"{len(pilot) // max(1, len(pilot_seed_ids))} rows/seed = {len(pilot)} → {pilot_path}"
+    )
 
 
 if __name__ == "__main__":

@@ -69,3 +69,7 @@ Claude Sonnet is temporarily `enabled: false` until Bedrock/Anthropic marketplac
 - `pilot_stability_s2026`
 
 Severity filter: **medium** only. Failure name mapping: `chunk_boundary→boundary`, `context_noise→noise`.
+
+## Docs
+
+- [s42 paired data analysis & paper impact](docs/s42_paired_analysis.md)

@@ -1,0 +1,21 @@
+# Bedrock pricing: per-model token rates in USD per 1K tokens.
+# Populate with the exact prompt/completion rates from your Bedrock account.
+models:
+  qwen:
+    prompt: 0.0000
+    completion: 0.0000
+  llama:
+    prompt: 0.0000
+    completion: 0.0000
+  gpt_oss:
+    prompt: 0.0000
+    completion: 0.0000
+  claude:
+    prompt: 0.0000
+    completion: 0.0000
+  deepseek:
+    prompt: 0.0000
+    completion: 0.0000
+  nova:
+    prompt: 0.0000
+    completion: 0.0000

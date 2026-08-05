@@ -117,6 +117,12 @@ def run_one(
             True if condition == "clean" else sample.get("answer_available")
         ),
         "gold_position": sample.get("gold_position"),
+        "severity": sample.get("severity"),
+        "num_contexts": sample.get("num_contexts"),
+        "mean_lexical_overlap": sample.get("mean_lexical_overlap"),
+        "max_lexical_overlap": sample.get("max_lexical_overlap"),
+        "same_category_only": sample.get("same_category_only"),
+        "position_variant": sample.get("position_variant"),
         "source_failure_id": sample.get("source_failure_id") if condition != "clean" else None,
         "answer": parsed.get("answer"),
         "citations": parsed.get("citations"),

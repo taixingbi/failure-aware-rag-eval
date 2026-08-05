@@ -4,3 +4,10 @@ __pycache__/
 *.pyc
 .DS_Store
 data/raw/
+
+data/benchmark/*/low/
+data/benchmark/*/medium/
+data/benchmark/*/high/
+data/benchmark/pilot_s42_n20_*.jsonl
+results/*/
+tmp/

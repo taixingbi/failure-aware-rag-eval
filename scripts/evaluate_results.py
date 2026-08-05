@@ -149,7 +149,9 @@ def evaluate_row(
             "question", "gold_answer", "answer", "citations", "abstained",
             "parse_ok", "error", "expected_behavior", "answer_available",
             "gold_chunk_ids", "conflict_chunk_ids", "alternate_answer",
-            "gold_position", "latency_ms", "input_tokens", "output_tokens",
+            "gold_position", "severity", "num_contexts", "mean_lexical_overlap",
+            "max_lexical_overlap", "same_category_only", "position_variant",
+            "latency_ms", "input_tokens", "output_tokens",
         )},
         "rule": rule,
         "accuracy": accuracy,
@@ -215,6 +217,10 @@ def aggregate(evals: list[dict]) -> dict:
             xs = [float(r["accuracy"]) for r in by_cond.get(cond, []) if r.get("accuracy") is not None]
             return mean(xs)
 
+        def metric(cond: str, field: str) -> float | None:
+            xs = [float(r[field]) for r in by_cond.get(cond, []) if r.get(field) is not None]
+            return mean(xs)
+
         clean_acc = acc("clean")
         noise_acc = acc("noise")
         boundary_acc = acc("boundary")
@@ -244,6 +250,13 @@ def aggregate(evals: list[dict]) -> dict:
         hnr_rows = by_cond.get("hard_negative", [])
         hnr = mean([1.0 if r.get("hard_negative_resistant") else 0.0 for r in hnr_rows]) if hnr_rows else None
 
+        def avg(xs: list[float]) -> float | None:
+            return mean(xs) if xs else None
+
+        latencies = [float(r["latency_ms"]) for r in rows if r.get("latency_ms") is not None]
+        input_tokens = [float(r["input_tokens"]) for r in rows if r.get("input_tokens") is not None]
+        output_tokens = [float(r["output_tokens"]) for r in rows if r.get("output_tokens") is not None]
+
         clean_rows = by_cond.get("clean", [])
         summary["models"][model] = {
             "clean": {
@@ -268,6 +281,38 @@ def aggregate(evals: list[dict]) -> dict:
                 "noise": noise_acc,
                 "evidence_position": acc("evidence_position"),
             },
+            "failure_metrics": {
+                "missing_evidence": {
+                    "accuracy": acc("missing_evidence"),
+                    "faithfulness": metric("missing_evidence", "faithfulness"),
+                    "citation_accuracy": metric("missing_evidence", "citation_accuracy"),
+                },
+                "conflict": {
+                    "accuracy": acc("conflict"),
+                    "faithfulness": metric("conflict", "faithfulness"),
+                    "citation_accuracy": metric("conflict", "citation_accuracy"),
+                },
+                "hard_negative": {
+                    "accuracy": acc("hard_negative"),
+                    "faithfulness": metric("hard_negative", "faithfulness"),
+                    "citation_accuracy": metric("hard_negative", "citation_accuracy"),
+                },
+                "boundary": {
+                    "accuracy": boundary_acc,
+                    "faithfulness": metric("boundary", "faithfulness"),
+                    "citation_accuracy": metric("boundary", "citation_accuracy"),
+                },
+                "noise": {
+                    "accuracy": noise_acc,
+                    "faithfulness": metric("noise", "faithfulness"),
+                    "citation_accuracy": metric("noise", "citation_accuracy"),
+                },
+                "evidence_position": {
+                    "accuracy": acc("evidence_position"),
+                    "faithfulness": metric("evidence_position", "faithfulness"),
+                    "citation_accuracy": metric("evidence_position", "citation_accuracy"),
+                },
+            },
             "failure_behavior": {
                 "MAR": mar,
                 "CRS": crs,
@@ -281,6 +326,11 @@ def aggregate(evals: list[dict]) -> dict:
                     "middle": mean(pos_groups["middle"]),
                     "last": last_acc,
                 },
+            },
+            "performance": {
+                "latency_ms": avg(latencies),
+                "input_tokens": avg(input_tokens),
+                "output_tokens": avg(output_tokens),
             },
             "n": {c: len(by_cond.get(c, [])) for c in CONDITIONS},
         }

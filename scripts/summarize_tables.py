@@ -95,6 +95,7 @@ def main() -> None:
     print("\n## Table 5: Cost-aware Selection (stub — costs not instrumented yet)")
     print("| Model | EnterpriseScore | Cost/1K | Latency | FRS per Dollar |")
     print("|---|---:|---:|---:|---:|")
+    print("\n_Note: use scripts/aggregate_summaries.py to compute enterprise-weighted decision scores and cost estimates once per-model Bedrock pricing is populated in configs/costs.yaml._")
     w = {k: float(v) for k, v in weights.items() if k in fail_keys}
     for m, d in models.items():
         f = d.get("failure_accuracy") or {}

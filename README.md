@@ -24,24 +24,46 @@ export INFERENCE_API_KEY=1234
 ## Pipeline
 
 ```bash
-# 1) Download + pair medium-severity clean↔failure cases
+# 1) Download + pair clean↔failure cases
 python scripts/prepare_benchmark.py --seeds 42,123,2026 --severity medium --pilot-n 20
+
+# 1a) Optional ablation datasets over all severity levels
+python scripts/prepare_benchmark.py --seeds 42,123,2026 --severity low,medium,high
 
 # 2) Smoke-test model aliases
 python scripts/run_benchmark.py --smoke
 
-# 3) Pilot run (seed 42, 20 paired seeds × clean+6 failures × 6 models ≈ 840 calls)
+# 3) Full seed run examples
 python scripts/run_benchmark.py \
-  --benchmark data/benchmark/pilot_s42_n20.jsonl \
-  --out results/pilot_s42
+  --benchmark data/benchmark/s42/medium/paired.jsonl \
+  --out results/s42
+
+python scripts/run_benchmark.py \
+  --benchmark data/benchmark/s123/medium/paired.jsonl \
+  --out results/s123
+
+python scripts/run_benchmark.py \
+  --benchmark data/benchmark/s2026/medium/paired.jsonl \
+  --out results/s2026
 
 # 4) Evaluate (rule metrics + dual LLM judge)
 python scripts/evaluate_results.py \
-  --results results/pilot_s42 \
-  --out results/eval/pilot_s42
+  --results results/s42 \
+  --out results/eval/s42
 
-# 5) Print tables
-python scripts/summarize_tables.py
+python scripts/evaluate_results.py \
+  --results results/s123 \
+  --out results/eval/s123
+
+python scripts/evaluate_results.py \
+  --results results/s2026 \
+  --out results/eval/s2026
+
+# 5) Aggregate across run seeds with mean ± std
+python scripts/aggregate_summaries.py --summaries results/eval/s42 results/eval/s123 results/eval/s2026
+
+# 6) Run ablation analyses for noise/hard-negative/context-length effects
+python scripts/ablation_analysis.py --evals results/eval/s42 results/eval/s123 results/eval/s2026
 ```
 
 ## Models
@@ -60,6 +82,11 @@ Concurrency: **4 in-flight requests per model** (`concurrency_per_model` in `con
 
 Claude Sonnet is temporarily `enabled: false` until Bedrock/Anthropic marketplace access is approved.
 
+## Pricing and enterprise selection
+
+- Fill `configs/costs.yaml` with Bedrock per-model prompt/completion rates.
+- Use `scripts/aggregate_summaries.py` to compute enterprise-weighted decision scores, cost per request, and FRS-per-dollar.
+
 ## Benchmark source
 
 [RAGFailBench](https://github.com/taixingbi/RAGFailBench) runs:
@@ -68,8 +95,9 @@ Claude Sonnet is temporarily `enabled: false` until Bedrock/Anthropic marketplac
 - `pilot_stability_s123`
 - `pilot_stability_s2026`
 
-Severity filter: **medium** only. Failure name mapping: `chunk_boundary→boundary`, `context_noise→noise`.
+Severity filter: **low/medium/high** options are available. Failure name mapping: `chunk_boundary→boundary`, `context_noise→noise`.
 
 ## Docs
 
 - [s42 paired data analysis & paper impact](docs/s42_paired_analysis.md)
+- [Enterprise model selection decision matrix](docs/enterprise_decision_matrix.md)

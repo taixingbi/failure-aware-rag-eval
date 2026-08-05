@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Download RAGFailBench runs and emit paired medium-severity benchmark JSONL."""
+"""Download RAGFailBench runs and emit paired benchmark JSONL with configurable severity."""
 
 from __future__ import annotations
 
@@ -229,10 +229,10 @@ def prepare_seed(
                     unify_failure(run_seed, clean, failures_by_type[canon][seed_id], canon)
                 )
 
-    out_path = out_dir / f"s{run_seed}" / "paired.jsonl"
+    out_path = out_dir / f"s{run_seed}" / severity / "paired.jsonl"
     write_jsonl(out_path, paired)
     print(
-        f"s{run_seed}: {len(ordered)} paired seeds × {len(FAILURE_TYPES)} failures "
+        f"s{run_seed} ({severity}): {len(ordered)} paired seeds × {len(FAILURE_TYPES)} failures "
         f"= {len(paired)} rows → {out_path}"
     )
     return paired
@@ -254,25 +254,28 @@ def main() -> None:
     args = parser.parse_args()
 
     seeds = [int(x.strip()) for x in args.seeds.split(",") if x.strip()]
-    all_paired: dict[int, list[dict]] = {}
+    severities = [s.strip() for s in args.severity.split(",") if s.strip()]
+    all_paired: dict[tuple[int, str], list[dict]] = {}
     for seed in seeds:
-        all_paired[seed] = prepare_seed(
-            seed, args.raw_dir, args.out_dir, args.severity, force=args.force
-        )
+        for severity in severities:
+            all_paired[(seed, severity)] = prepare_seed(
+                seed, args.raw_dir, args.out_dir, severity, force=args.force
+            )
 
-    # pilot slice for pilot_seed
-    pilot_rows = all_paired.get(args.pilot_seed) or prepare_seed(
-        args.pilot_seed, args.raw_dir, args.out_dir, args.severity, force=args.force
-    )
-    pilot_seed_ids = sorted({r["seed_id"] for r in pilot_rows})[: args.pilot_n]
-    pilot_set = set(pilot_seed_ids)
-    pilot = [r for r in pilot_rows if r["seed_id"] in pilot_set]
-    pilot_path = args.out_dir / f"pilot_s{args.pilot_seed}_n{args.pilot_n}.jsonl"
-    write_jsonl(pilot_path, pilot)
-    print(
-        f"Pilot: {len(pilot_seed_ids)} seeds × "
-        f"{len(pilot) // max(1, len(pilot_seed_ids))} rows/seed = {len(pilot)} → {pilot_path}"
-    )
+    # pilot slice for pilot_seed and each requested severity
+    for severity in severities:
+        pilot_rows = all_paired.get((args.pilot_seed, severity))
+        if not pilot_rows:
+            continue
+        pilot_seed_ids = sorted({r["seed_id"] for r in pilot_rows})[: args.pilot_n]
+        pilot_set = set(pilot_seed_ids)
+        pilot = [r for r in pilot_rows if r["seed_id"] in pilot_set]
+        pilot_path = args.out_dir / f"pilot_s{args.pilot_seed}_n{args.pilot_n}_{severity}.jsonl"
+        write_jsonl(pilot_path, pilot)
+        print(
+            f"Pilot ({severity}): {len(pilot_seed_ids)} seeds × "
+            f"{len(pilot) // max(1, len(pilot_seed_ids))} rows/seed = {len(pilot)} → {pilot_path}"
+        )
 
 
 if __name__ == "__main__":

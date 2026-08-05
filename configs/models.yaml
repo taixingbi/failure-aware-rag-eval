@@ -11,7 +11,7 @@ concurrency_per_model: 4
 
 models:
   - slug: qwen
-    model_id: Qwen/Qwen2.5-7B-Instruct
+    model_id: qwen3-next-80b-a3b
     enabled: true
   - slug: llama
     model_id: llama

@@ -48,7 +48,7 @@ python scripts/summarize_tables.py
 
 | Slug | API model id |
 |---|---|
-| qwen | Qwen/Qwen2.5-7B-Instruct |
+| qwen | qwen3-next-80b-a3b |
 | llama | llama |
 | gpt_oss | gpt-oss |
 | claude | claude-sonnet-5 |

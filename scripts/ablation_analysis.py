@@ -108,7 +108,14 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    rows = load_evals(args.evals)
+    # filter missing eval paths with a warning
+    existing_paths: list[Path] = []
+    for p in args.evals:
+        if not p.exists():
+            print(f"Warning: eval path not found, skipping: {p}")
+            continue
+        existing_paths.append(p)
+    rows = load_evals(existing_paths)
     if not rows:
         raise SystemExit("No evaluated rows found.")
 

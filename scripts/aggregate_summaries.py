@@ -8,7 +8,10 @@ import json
 import math
 from pathlib import Path
 
-import yaml
+try:
+    import yaml
+except Exception:  # PyYAML may not be installed in the environment
+    yaml = None
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -43,6 +46,8 @@ def load_summary(path: Path) -> dict:
 
 
 def load_costs(path: Path | None) -> dict[str, dict[str, float]]:
+    if yaml is None:
+        return {}
     if path is None or not path.exists():
         return {}
     with path.open(encoding="utf-8") as f:
@@ -149,11 +154,29 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    summaries = [load_summary(p) for p in args.summaries]
+    # filter missing summaries with a warning
+    summaries: list[dict] = []
+    for p in args.summaries:
+        if not p.exists():
+            print(f"Warning: summary path not found, skipping: {p}")
+            continue
+        try:
+            summaries.append(load_summary(p))
+        except Exception as e:
+            print(f"Warning: failed to load summary {p}: {e}")
+    if not summaries:
+        raise SystemExit("No valid summaries found to aggregate.")
     costs = load_costs(args.costs)
-    weights_cfg = yaml.safe_load(args.weights.open(encoding="utf-8"))
-    weights = {k: float(v) for k, v in weights_cfg.items() if k != "cost_lambda"}
-    cost_lambda = float(weights_cfg.get("cost_lambda", 1.0))
+    # load enterprise weights if PyYAML is available and file exists
+    weights = {}
+    cost_lambda = 1.0
+    if yaml is not None and args.weights.exists():
+        try:
+            weights_cfg = yaml.safe_load(args.weights.open(encoding="utf-8")) or {}
+            weights = {k: float(v) for k, v in weights_cfg.items() if k != "cost_lambda"}
+            cost_lambda = float(weights_cfg.get("cost_lambda", 1.0))
+        except Exception as e:
+            print(f"Warning: failed to load weights file {args.weights}: {e}")
 
     model_stats = summarize_models(summaries)
     model_names = sorted(model_stats)

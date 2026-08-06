@@ -34,10 +34,12 @@ python scripts/prepare_benchmark.py --seeds 42,123,2026 --severity low,medium,hi
 python scripts/run_benchmark.py --smoke
 
 # 3) Full seed run examples
+# s42 is the currently documented completed seed; s123 and s2026 are included here as explicit pending runs.
 python scripts/run_benchmark.py \
   --benchmark data/benchmark/s42/medium/paired.jsonl \
   --out results/s42
 
+# Pending full runs for s123 and s2026
 python scripts/run_benchmark.py \
   --benchmark data/benchmark/s123/medium/paired.jsonl \
   --out results/s123
@@ -47,6 +49,7 @@ python scripts/run_benchmark.py \
   --out results/s2026
 
 # 4) Evaluate (rule metrics + dual LLM judge)
+# Run these once the corresponding seed outputs exist; s123 and s2026 are pending until the commands above finish.
 python scripts/evaluate_results.py \
   --results results/s42 \
   --out results/eval/s42

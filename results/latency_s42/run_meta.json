@@ -1,0 +1,38 @@
+{
+  "run_id": "latency_cost_20260806T165951Z",
+  "benchmark": "data/benchmark/s42/medium/paired.jsonl",
+  "seeds": 30,
+  "conditions": [
+    "clean",
+    "missing_evidence",
+    "conflict",
+    "hard_negative",
+    "boundary",
+    "noise",
+    "evidence_position"
+  ],
+  "models": [
+    "qwen",
+    "llama",
+    "gpt_oss",
+    "deepseek",
+    "nova"
+  ],
+  "reps": 3,
+  "warmup": 5,
+  "concurrency": 1,
+  "stream": true,
+  "region": "us-east-1",
+  "service_tier": "standard",
+  "decode": {
+    "temperature": 0,
+    "top_p": 1.0,
+    "max_tokens": 256
+  },
+  "pricing_meta": {
+    "pricing_date": "2026-08-06",
+    "region": "us-east-1",
+    "service_tier": "standard"
+  },
+  "started_at": "2026-08-06T16:59:51.208266+00:00"
+}

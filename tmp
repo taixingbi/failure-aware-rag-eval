@@ -1,0 +1,15 @@
+python scripts/run_benchmark.py \
+  --benchmark data/benchmark/s42/medium/paired.jsonl \
+  --out results/s42
+
+python scripts/run_benchmark.py \
+  --benchmark data/benchmark/s123/medium/paired.jsonl \
+  --out results/s123
+
+python scripts/run_benchmark.py \
+  --benchmark data/benchmark/s2026/medium/paired.jsonl \
+  --out results/s2026
+
+python scripts/evaluate_results.py --results results/s42 --out results/eval/s42
+python scripts/evaluate_results.py --results results/s123 --out results/eval/s123
+python scripts/evaluate_results.py --results results/s2026 --out results/eval/s2026

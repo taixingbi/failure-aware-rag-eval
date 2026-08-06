@@ -1,21 +1,40 @@
-# Bedrock pricing: per-model token rates in USD per 1K tokens.
-# Populate with the exact prompt/completion rates from your Bedrock account.
+# Bedrock serving-cost pricing for RQ5 (exclude judge / evaluation cost).
+# Prefer per-million rates from the Bedrock pricing page for us-east-1 Standard tier.
+# Legacy prompt/completion = USD per 1K tokens (still supported by the runner).
+
+pricing_date: "2026-08-06"
+region: us-east-1
+service_tier: standard
+
 models:
   qwen:
+    input_price_per_million: 0.0
+    output_price_per_million: 0.0
+    # legacy fallback fields (used only if *_per_million absent):
     prompt: 0.0000
     completion: 0.0000
   llama:
+    input_price_per_million: 0.0
+    output_price_per_million: 0.0
     prompt: 0.0000
     completion: 0.0000
   gpt_oss:
+    input_price_per_million: 0.0
+    output_price_per_million: 0.0
     prompt: 0.0000
     completion: 0.0000
   claude:
+    input_price_per_million: 0.0
+    output_price_per_million: 0.0
     prompt: 0.0000
     completion: 0.0000
   deepseek:
+    input_price_per_million: 0.0
+    output_price_per_million: 0.0
     prompt: 0.0000
     completion: 0.0000
   nova:
+    input_price_per_million: 0.0
+    output_price_per_million: 0.0
     prompt: 0.0000
     completion: 0.0000

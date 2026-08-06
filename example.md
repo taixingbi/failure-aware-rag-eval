@@ -5,6 +5,10 @@ FUNCTION_URL=$(aws cloudformation describe-stacks \
   --output text)
 INFERENCE_API_KEY=1234
 
+# Non-stream responses are JSON → pipe to jq.
+# Stream responses are SSE (text/event-stream) → use curl -N, do NOT pipe to jq.
+# Full stream examples: https://github.com/taixingbi/mvp-bedrock/blob/main/example.md
+
 # Qwen3
 curl -sS -X POST "${FUNCTION_URL}v1/chat/completions" \
   -H "Content-Type: application/json" \
@@ -17,6 +21,18 @@ curl -sS -X POST "${FUNCTION_URL}v1/chat/completions" \
   }' | jq '{error, detail, model, answer: .choices[0].message.content, usage}'
 echo
 
+# Qwen3 (stream) — client measures TTFT on first delta.content
+curl -sS -N -X POST "${FUNCTION_URL}v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${INFERENCE_API_KEY}" \
+  -d '{
+    "model": "qwen3-next-80b-a3b",
+    "messages": [{"role": "user", "content": "Say hello in one short sentence."}],
+    "max_tokens": 64,
+    "temperature": 0,
+    "stream": true
+  }'
+echo
 
 # Amazon Nova Pro (marketplace)
 curl -sS -X POST "${FUNCTION_URL}v1/chat/completions" \

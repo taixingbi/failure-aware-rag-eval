@@ -229,6 +229,7 @@ def main() -> None:
                     ensure_ascii=False,
                 )
             )
+        print("For stream TTFT smoke: python scripts/run_latency_cost.py --smoke", file=sys.stderr)
         return
 
     rows = read_jsonl(args.benchmark)

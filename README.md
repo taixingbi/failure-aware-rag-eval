@@ -67,7 +67,27 @@ python scripts/aggregate_summaries.py --summaries results/eval/s42 results/eval/
 
 # 6) Run ablation analyses for noise/hard-negative/context-length effects
 python scripts/ablation_analysis.py --evals results/eval/s42 results/eval/s123 results/eval/s2026
+
+# 7) RQ5 latency/cost on the same RAG workload (streaming; concurrency=1)
+# Smoke stream TTFT/E2E for each enabled model
+python scripts/run_latency_cost.py --smoke
+
+# Default: 30 seeds × conditions × 5 models × 3 reps (budget-friendly)
+python scripts/run_latency_cost.py \
+  --benchmark data/benchmark/s42/medium/paired.jsonl \
+  --out results/latency_s42 \
+  --limit 30 --reps 3 --warmup 5
+
+python scripts/summarize_latency.py --records results/latency_s42/latency_records.jsonl
 ```
+
+Client-measured stream metrics:
+
+- `ttft_ms`: request start → first non-empty `delta.content`
+- `e2e_latency_ms`: request start → stream `[DONE]`
+- `bedrock_latency_ms`: optional (null until Lambda returns it)
+
+Serving cost only (judge / evaluation cost excluded). Fill `configs/costs.yaml` from the Bedrock pricing page (`pricing_date`, `us-east-1`, Standard tier).
 
 ## Models
 
@@ -87,8 +107,9 @@ Claude Sonnet is temporarily `enabled: false` until Bedrock/Anthropic marketplac
 
 ## Pricing and enterprise selection
 
-- Fill `configs/costs.yaml` with Bedrock per-model prompt/completion rates.
+- Fill `configs/costs.yaml` with Bedrock per-model rates (`input_price_per_million` / `output_price_per_million`, plus `pricing_date`).
 - Use `scripts/aggregate_summaries.py` to compute enterprise-weighted decision scores, cost per request, and FRS-per-dollar.
+- Use `scripts/run_latency_cost.py` + `scripts/summarize_latency.py` for RQ5 quality–latency–cost tables on the **same** RAG prompts (not toy hellos).
 
 ## Benchmark source
 

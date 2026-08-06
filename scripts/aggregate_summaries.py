@@ -126,11 +126,15 @@ def cost_per_request(costs: dict[str, dict[str, float]], model: str, input_token
     rates = costs.get(model)
     if not rates:
         return None
+    if "input_price_per_million" in rates or "output_price_per_million" in rates:
+        pin = float(rates.get("input_price_per_million") or 0.0)
+        pout = float(rates.get("output_price_per_million") or 0.0)
+        return (input_tokens / 1_000_000.0) * pin + (output_tokens / 1_000_000.0) * pout
     prompt_price = rates.get("prompt")
     completion_price = rates.get("completion")
     if prompt_price is None or completion_price is None:
         return None
-    return (input_tokens / 1000.0) * prompt_price + (output_tokens / 1000.0) * completion_price
+    return (input_tokens / 1000.0) * float(prompt_price) + (output_tokens / 1000.0) * float(completion_price)
 
 
 def main() -> None:

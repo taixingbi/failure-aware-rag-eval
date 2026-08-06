@@ -79,15 +79,26 @@ python scripts/run_latency_cost.py \
   --limit 30 --reps 3 --warmup 5
 
 python scripts/summarize_latency.py --records results/latency_s42/latency_records.jsonl
+# → results/latency_s42/latency_summary.json  (E2E/TTFT p50/p95 per model)
+# → results/latency_s42/latency_report.md
+
+# After a latency run (or if stream omitted usage), backfill tokens from accuracy + apply costs.yaml
+python scripts/recompute_latency_costs.py \
+  --records results/latency_s42/latency_records.jsonl \
+  --accuracy-results results/s42 \
+  --costs configs/costs.yaml
 ```
+
+Paper latency metrics are **percentiles over successful calls** (`e2e_latency_ms.p50/p95`, `ttft_ms.p50/p95`), not single-row values and not mean-alone.
 
 Client-measured stream metrics:
 
 - `ttft_ms`: request start → first non-empty `delta.content`
 - `e2e_latency_ms`: request start → stream `[DONE]`
 - `bedrock_latency_ms`: optional (null until Lambda returns it)
+- Cost uses Bedrock Standard rates in `configs/costs.yaml`; when stream omits `usage`, tokens are joined from the non-stream accuracy run (`usage_source: accuracy_nonstream`)
 
-Serving cost only (judge / evaluation cost excluded). Fill `configs/costs.yaml` from the Bedrock pricing page (`pricing_date`, `us-east-1`, Standard tier).
+Serving cost only (judge / evaluation cost excluded). Fill/verify `configs/costs.yaml` from the [Bedrock pricing page](https://aws.amazon.com/bedrock/pricing/) (`pricing_date`, `us-east-1`, Standard tier).
 
 ## Models
 

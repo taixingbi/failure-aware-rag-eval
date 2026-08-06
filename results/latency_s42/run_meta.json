@@ -1,5 +1,5 @@
 {
-  "run_id": "latency_cost_20260806T165951Z",
+  "run_id": "latency_cost_20260806T174008Z",
   "benchmark": "data/benchmark/s42/medium/paired.jsonl",
   "seeds": 30,
   "conditions": [
@@ -34,5 +34,7 @@
     "region": "us-east-1",
     "service_tier": "standard"
   },
-  "started_at": "2026-08-06T16:59:51.208266+00:00"
+  "started_at": "2026-08-06T17:40:08.028441+00:00",
+  "finished_at": "2026-08-06T18:49:58.357265+00:00",
+  "n_records": 4050
 }

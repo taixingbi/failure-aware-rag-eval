@@ -1,40 +1,39 @@
 # Bedrock serving-cost pricing for RQ5 (exclude judge / evaluation cost).
-# Prefer per-million rates from the Bedrock pricing page for us-east-1 Standard tier.
-# Legacy prompt/completion = USD per 1K tokens (still supported by the runner).
+# Source: https://aws.amazon.com/bedrock/pricing/ (Standard / on-demand)
+# Region: us-east-1. Verify before camera-ready; prices change.
 
 pricing_date: "2026-08-06"
 region: us-east-1
 service_tier: standard
+source_url: "https://aws.amazon.com/bedrock/pricing/"
 
 models:
+  # Qwen3 Next 80B A3B — US East (N. Virginia) / Ohio / Oregon
   qwen:
-    input_price_per_million: 0.0
-    output_price_per_million: 0.0
-    # legacy fallback fields (used only if *_per_million absent):
-    prompt: 0.0000
-    completion: 0.0000
+    model_id: qwen3-next-80b-a3b
+    input_price_per_million: 0.15
+    output_price_per_million: 1.20
+  # Meta Llama 3.3 70B Instruct (alias: llama → us.meta.llama3-3-70b-instruct-v1:0)
   llama:
-    input_price_per_million: 0.0
-    output_price_per_million: 0.0
-    prompt: 0.0000
-    completion: 0.0000
+    model_id: llama
+    input_price_per_million: 0.72
+    output_price_per_million: 0.72
+  # OpenAI GPT-OSS 120B (alias: gpt-oss). US on-demand listed ~parity with APAC Standard.
   gpt_oss:
-    input_price_per_million: 0.0
-    output_price_per_million: 0.0
-    prompt: 0.0000
-    completion: 0.0000
+    model_id: gpt-oss
+    input_price_per_million: 0.15
+    output_price_per_million: 0.60
   claude:
-    input_price_per_million: 0.0
-    output_price_per_million: 0.0
-    prompt: 0.0000
-    completion: 0.0000
+    model_id: claude-sonnet-5
+    input_price_per_million: 3.00
+    output_price_per_million: 15.00
+  # DeepSeek V3.2
   deepseek:
-    input_price_per_million: 0.0
-    output_price_per_million: 0.0
-    prompt: 0.0000
-    completion: 0.0000
+    model_id: deepseek
+    input_price_per_million: 0.62
+    output_price_per_million: 1.85
+  # Amazon Nova Pro
   nova:
-    input_price_per_million: 0.0
-    output_price_per_million: 0.0
-    prompt: 0.0000
-    completion: 0.0000
+    model_id: nova-pro
+    input_price_per_million: 0.80
+    output_price_per_million: 3.20

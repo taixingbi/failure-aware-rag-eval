@@ -1,0 +1,165 @@
+{
+  "metric_note": "p50/p95 are percentiles over successful stream calls only (rows with error excluded). Each jsonl row is one call; these aggregates are the paper latency metrics.",
+  "n_records": 4050,
+  "n_success": 4047,
+  "models": {
+    "deepseek": {
+      "n_total": 810,
+      "n_success": 809,
+      "error_rate": 0.0012,
+      "e2e_latency_ms": {
+        "p50": 938.8,
+        "p90": 1738.2,
+        "p95": 2105.3,
+        "p99": 3927.8,
+        "mean": 1168.3
+      },
+      "ttft_ms": {
+        "p50": 661.4,
+        "p95": 1280.8,
+        "mean": 824.6
+      },
+      "otps_mean": 38.39,
+      "cost_per_request_usd_mean": 0.000742,
+      "cost_per_1k_usd": 0.7424
+    },
+    "gpt_oss": {
+      "n_total": 810,
+      "n_success": 809,
+      "error_rate": 0.0012,
+      "e2e_latency_ms": {
+        "p50": 1169.2,
+        "p90": 2199.0,
+        "p95": 2823.5,
+        "p99": 3651.6,
+        "mean": 1386.6
+      },
+      "ttft_ms": {
+        "p50": 1110.9,
+        "p95": 2369.9,
+        "mean": 1286.9
+      },
+      "otps_mean": 130.63,
+      "cost_per_request_usd_mean": 0.000261,
+      "cost_per_1k_usd": 0.261
+    },
+    "llama": {
+      "n_total": 810,
+      "n_success": 810,
+      "error_rate": 0.0,
+      "e2e_latency_ms": {
+        "p50": 589.2,
+        "p90": 1027.1,
+        "p95": 1339.9,
+        "p99": 2684.3,
+        "mean": 718.1
+      },
+      "ttft_ms": {
+        "p50": 377.3,
+        "p95": 755.8,
+        "mean": 449.3
+      },
+      "otps_mean": 59.02,
+      "cost_per_request_usd_mean": 0.000834,
+      "cost_per_1k_usd": 0.8343
+    },
+    "nova": {
+      "n_total": 810,
+      "n_success": 810,
+      "error_rate": 0.0,
+      "e2e_latency_ms": {
+        "p50": 675.4,
+        "p90": 971.3,
+        "p95": 1075.8,
+        "p99": 1338.1,
+        "mean": 705.0
+      },
+      "ttft_ms": {
+        "p50": 469.2,
+        "p95": 817.9,
+        "mean": 521.1
+      },
+      "otps_mean": 53.18,
+      "cost_per_request_usd_mean": 0.000994,
+      "cost_per_1k_usd": 0.9944
+    },
+    "qwen": {
+      "n_total": 810,
+      "n_success": 809,
+      "error_rate": 0.0012,
+      "e2e_latency_ms": {
+        "p50": 831.6,
+        "p90": 1226.9,
+        "p95": 1386.1,
+        "p99": 1950.1,
+        "mean": 895.4
+      },
+      "ttft_ms": {
+        "p50": 630.6,
+        "p95": 863.5,
+        "mean": 655.9
+      },
+      "otps_mean": 43.6,
+      "cost_per_request_usd_mean": 0.000216,
+      "cost_per_1k_usd": 0.2159
+    }
+  },
+  "by_failure": {
+    "boundary": {
+      "n": 450,
+      "e2e_p50_ms": 805.7,
+      "e2e_p95_ms": 2037.7,
+      "input_tokens_mean": 529.7,
+      "output_tokens_mean": 62.7,
+      "cost_per_request_usd_mean": 0.000326
+    },
+    "clean": {
+      "n": 447,
+      "e2e_p50_ms": 796.8,
+      "e2e_p95_ms": 1873.4,
+      "input_tokens_mean": 1542.4,
+      "output_tokens_mean": 56.9,
+      "cost_per_request_usd_mean": 0.000817
+    },
+    "conflict": {
+      "n": 450,
+      "e2e_p50_ms": 874.9,
+      "e2e_p95_ms": 2238.8,
+      "input_tokens_mean": 779.1,
+      "output_tokens_mean": 69.9,
+      "cost_per_request_usd_mean": 0.000451
+    },
+    "evidence_position": {
+      "n": 1350,
+      "e2e_p50_ms": 803.7,
+      "e2e_p95_ms": 1750.2,
+      "input_tokens_mean": 1546.1,
+      "output_tokens_mean": 58.3,
+      "cost_per_request_usd_mean": 0.000817
+    },
+    "hard_negative": {
+      "n": 450,
+      "e2e_p50_ms": 826.7,
+      "e2e_p95_ms": 2069.1,
+      "input_tokens_mean": 1202.2,
+      "output_tokens_mean": 54.9,
+      "cost_per_request_usd_mean": 0.000646
+    },
+    "missing_evidence": {
+      "n": 450,
+      "e2e_p50_ms": 794.7,
+      "e2e_p95_ms": 2089.2,
+      "input_tokens_mean": 381.5,
+      "output_tokens_mean": 60.6,
+      "cost_per_request_usd_mean": 0.00025
+    },
+    "noise": {
+      "n": 450,
+      "e2e_p50_ms": 782.5,
+      "e2e_p95_ms": 1842.0,
+      "input_tokens_mean": 996.1,
+      "output_tokens_mean": 56.3,
+      "cost_per_request_usd_mean": 0.000548
+    }
+  }
+}

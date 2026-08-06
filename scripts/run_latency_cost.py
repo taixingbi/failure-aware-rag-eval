@@ -18,6 +18,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 import yaml
 from dotenv import load_dotenv
@@ -88,6 +89,8 @@ def model_cost_usd(
     rates = models.get(slug)
     if not rates:
         return None
+    if input_tokens is None and output_tokens is None:
+        return None
     # Prefer per-1M if set; else per-1K prompt/completion (legacy stub).
     if "input_price_per_million" in rates or "output_price_per_million" in rates:
         pin = float(rates.get("input_price_per_million") or 0.0)
@@ -100,6 +103,46 @@ def model_cost_usd(
     tin = float(input_tokens or 0)
     tout = float(output_tokens or 0)
     return (tin / 1000.0) * pin + (tout / 1000.0) * pout
+
+
+def load_accuracy_token_index(results_dir: Path | None) -> dict[tuple[str, str, str, str | None], dict]:
+    idx: dict[tuple[str, str, str, str | None], dict] = {}
+    if results_dir is None or not results_dir.exists():
+        return idx
+    for path in results_dir.rglob("*.jsonl"):
+        for row in read_jsonl(path):
+            slug = row.get("model_slug") or path.stem
+            sid = row.get("sample_id")
+            cond = row.get("condition") or path.parent.name
+            if not sid:
+                continue
+            if row.get("input_tokens") is None and row.get("output_tokens") is None:
+                continue
+            pos = row.get("gold_position")
+            pos_key = str(pos) if pos is not None and cond == "evidence_position" else None
+            idx[(str(slug), str(sid), str(cond), pos_key)] = {
+                "input_tokens": row.get("input_tokens"),
+                "output_tokens": row.get("output_tokens"),
+            }
+    return idx
+
+
+def lookup_accuracy_tokens(
+    idx: dict[tuple[str, str, str, str | None], dict],
+    *,
+    slug: str,
+    sample_id: str,
+    condition: str,
+    gold_position: Any,
+) -> dict | None:
+    pos_key = (
+        str(gold_position)
+        if gold_position is not None and condition == "evidence_position"
+        else None
+    )
+    return idx.get((slug, sample_id, condition, pos_key)) or idx.get(
+        (slug, sample_id, condition, None)
+    )
 
 
 def result_key(sample: dict, cond: str, model_slug: str, rep: int) -> str:
@@ -159,6 +202,7 @@ def run_one(
     rep: int,
     region: str,
     service_tier: str,
+    accuracy_tokens: dict[tuple[str, str, str, str | None], dict] | None = None,
 ) -> dict:
     auth_ids = None
     if condition == "conflict":
@@ -181,12 +225,29 @@ def run_one(
     parsed = parse_answer_payload(result.content)
     e2e = float(result.latency_ms)
     ttft = float(result.ttft_ms) if result.ttft_ms is not None else None
-    out_tok = result.output_tokens
+
+    input_tokens = result.input_tokens
+    output_tokens = result.output_tokens
+    usage_source = "stream" if (input_tokens is not None or output_tokens is not None) else None
+    if (input_tokens is None or output_tokens is None) and accuracy_tokens:
+        hit = lookup_accuracy_tokens(
+            accuracy_tokens,
+            slug=model["slug"],
+            sample_id=str(sample.get("seed_id") or ""),
+            condition=condition,
+            gold_position=sample.get("gold_position"),
+        )
+        if hit:
+            input_tokens = hit.get("input_tokens") if input_tokens is None else input_tokens
+            output_tokens = hit.get("output_tokens") if output_tokens is None else output_tokens
+            usage_source = "accuracy_nonstream"
+
+    out_tok = output_tokens
     otps = None
     if out_tok is not None and e2e > 0:
         # Approximate; includes prefill wait (not pure decode speed).
         otps = out_tok / (e2e / 1000.0)
-    cost = model_cost_usd(costs_cfg, model["slug"], result.input_tokens, result.output_tokens)
+    cost = model_cost_usd(costs_cfg, model["slug"], input_tokens, output_tokens)
 
     return {
         "run_id": run_id,
@@ -206,12 +267,14 @@ def run_one(
         "ttft_ms": round(ttft, 3) if ttft is not None else None,
         "bedrock_latency_ms": None,  # optional; requires Lambda instrumentation
         "gateway_overhead_ms": None,
-        "input_tokens": result.input_tokens,
-        "output_tokens": result.output_tokens,
+        "input_tokens": input_tokens,
+        "output_tokens": output_tokens,
+        "usage_source": usage_source,
         "output_tokens_per_second": round(otps, 3) if otps is not None else None,
         "model_cost_usd": cost,
         "lambda_cost_usd": None,
         "total_cost_usd": cost,
+        "pricing_date": costs_cfg.get("pricing_date"),
         "http_status": result.http_status,
         "retry_count": result.retry_count,
         "throttled": bool(result.error and "throttl" in str(result.error).lower()),
@@ -278,6 +341,12 @@ def main() -> None:
     parser.add_argument("--out", type=Path, default=ROOT / "results" / "latency_s42")
     parser.add_argument("--models-config", type=Path, default=ROOT / "configs" / "models.yaml")
     parser.add_argument("--costs", type=Path, default=ROOT / "configs" / "costs.yaml")
+    parser.add_argument(
+        "--accuracy-results",
+        type=Path,
+        default=ROOT / "results" / "s42",
+        help="Backfill missing stream usage from non-stream accuracy tokens",
+    )
     parser.add_argument("--models", default="", help="Comma-separated slugs (default: enabled)")
     parser.add_argument("--conditions", default="", help="Comma-separated (default: clean+6 failures)")
     parser.add_argument("--limit", type=int, default=30, help="Unique seeds (0=all; default 30)")
@@ -294,6 +363,9 @@ def main() -> None:
     costs_cfg = load_costs(args.costs)
     prompts = load_prompts()
     client = InferenceClient()
+    accuracy_tokens = load_accuracy_token_index(args.accuracy_results)
+    if accuracy_tokens:
+        print(f"Loaded {len(accuracy_tokens)} accuracy token keys from {args.accuracy_results}")
 
     run_id = args.run_id or f"latency_cost_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
     out_path = args.out / "latency_records.jsonl"
@@ -403,6 +475,7 @@ def main() -> None:
             rep=rep,
             region=args.region,
             service_tier=args.service_tier,
+            accuracy_tokens=accuracy_tokens,
         )
         append_jsonl(out_path, rec)
         recorded.append(rec)
@@ -415,6 +488,24 @@ def main() -> None:
     meta["n_records"] = len(all_rows)
     meta_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
     print(f"Wrote {out_path} ({len(all_rows)} records)")
+
+    # Emit p50/p95 summary artifacts for the paper.
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "summarize_latency",
+        ROOT / "scripts" / "summarize_latency.py",
+    )
+    assert spec and spec.loader
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    summary = mod.build_summary(all_rows)
+    summary_path = args.out / "latency_summary.json"
+    report_path = args.out / "latency_report.md"
+    summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    report_path.write_text(mod.render_markdown(summary), encoding="utf-8")
+    print(f"Wrote {summary_path} (E2E/TTFT p50/p95)")
+    print(f"Wrote {report_path}")
 
 
 def result_key_from_row(row: dict) -> str:

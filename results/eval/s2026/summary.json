@@ -1,0 +1,403 @@
+{
+  "models": {
+    "deepseek": {
+      "clean": {
+        "accuracy": 1.0,
+        "relevance": 1.0,
+        "faithfulness": 1.0,
+        "citation_accuracy": 0.9921875
+      },
+      "failure_accuracy": {
+        "missing_evidence": 0.8125,
+        "conflict": 0.984375,
+        "hard_negative": 0.90625,
+        "boundary": 1.0,
+        "noise": 0.984375,
+        "evidence_position": 0.9791666666666666
+      },
+      "failure_metrics": {
+        "missing_evidence": {
+          "accuracy": 0.8125,
+          "faithfulness": 0.8870967741935484,
+          "citation_accuracy": 0.42857142857142855
+        },
+        "conflict": {
+          "accuracy": 0.984375,
+          "faithfulness": 0.9921875,
+          "citation_accuracy": 1.0
+        },
+        "hard_negative": {
+          "accuracy": 0.90625,
+          "faithfulness": 0.953125,
+          "citation_accuracy": 0.8333333333333334
+        },
+        "boundary": {
+          "accuracy": 1.0,
+          "faithfulness": 0.9841269841269841,
+          "citation_accuracy": 0.90625
+        },
+        "noise": {
+          "accuracy": 0.984375,
+          "faithfulness": 0.984375,
+          "citation_accuracy": 1.0
+        },
+        "evidence_position": {
+          "accuracy": 0.9791666666666666,
+          "faithfulness": 0.975,
+          "citation_accuracy": 1.0
+        }
+      },
+      "failure_behavior": {
+        "MAR": 0.8125,
+        "CRS": 0.90625,
+        "HNR": 0.90625,
+        "NRS": 0.984375,
+        "BRS": 1.0,
+        "NoiseDrop": 0.015625,
+        "PositionDrop": 0.015625,
+        "position_accuracy": {
+          "first": 1.0,
+          "middle": 0.953125,
+          "last": 0.984375
+        }
+      },
+      "performance": {
+        "latency_ms": 1299.3506944444443,
+        "input_tokens": 1077.5434027777778,
+        "output_tokens": 40.357638888888886
+      },
+      "n": {
+        "clean": 64,
+        "missing_evidence": 64,
+        "conflict": 64,
+        "hard_negative": 64,
+        "boundary": 64,
+        "noise": 64,
+        "evidence_position": 192
+      }
+    },
+    "gpt_oss": {
+      "clean": {
+        "accuracy": 0.984375,
+        "relevance": 0.984375,
+        "faithfulness": 0.9841269841269841,
+        "citation_accuracy": 1.0
+      },
+      "failure_accuracy": {
+        "missing_evidence": 0.78125,
+        "conflict": 0.953125,
+        "hard_negative": 0.921875,
+        "boundary": 0.828125,
+        "noise": 1.0,
+        "evidence_position": 0.984375
+      },
+      "failure_metrics": {
+        "missing_evidence": {
+          "accuracy": 0.78125,
+          "faithfulness": 0.859375,
+          "citation_accuracy": 0.3333333333333333
+        },
+        "conflict": {
+          "accuracy": 0.953125,
+          "faithfulness": 0.953125,
+          "citation_accuracy": 1.0
+        },
+        "hard_negative": {
+          "accuracy": 0.921875,
+          "faithfulness": 0.9375,
+          "citation_accuracy": 1.0
+        },
+        "boundary": {
+          "accuracy": 0.828125,
+          "faithfulness": 0.8174603174603174,
+          "citation_accuracy": 0.9803921568627451
+        },
+        "noise": {
+          "accuracy": 1.0,
+          "faithfulness": 1.0,
+          "citation_accuracy": 1.0
+        },
+        "evidence_position": {
+          "accuracy": 0.984375,
+          "faithfulness": 0.9790575916230366,
+          "citation_accuracy": 1.0
+        }
+      },
+      "failure_behavior": {
+        "MAR": 0.78125,
+        "CRS": 0.859375,
+        "HNR": 0.921875,
+        "NRS": 1.0158730158730158,
+        "BRS": 0.8412698412698413,
+        "NoiseDrop": -0.015625,
+        "PositionDrop": -0.015625,
+        "position_accuracy": {
+          "first": 0.984375,
+          "middle": 0.96875,
+          "last": 1.0
+        }
+      },
+      "performance": {
+        "latency_ms": 1358.8159722222222,
+        "input_tokens": 1133.5850694444443,
+        "output_tokens": 150.77604166666666
+      },
+      "n": {
+        "clean": 64,
+        "missing_evidence": 64,
+        "conflict": 64,
+        "hard_negative": 64,
+        "boundary": 64,
+        "noise": 64,
+        "evidence_position": 192
+      }
+    },
+    "llama": {
+      "clean": {
+        "accuracy": 0.984375,
+        "relevance": 0.9921875,
+        "faithfulness": 0.9765625,
+        "citation_accuracy": 0.984375
+      },
+      "failure_accuracy": {
+        "missing_evidence": 0.671875,
+        "conflict": 0.984375,
+        "hard_negative": 0.390625,
+        "boundary": 0.984375,
+        "noise": 1.0,
+        "evidence_position": 0.9842931937172775
+      },
+      "failure_metrics": {
+        "missing_evidence": {
+          "accuracy": 0.671875,
+          "faithfulness": 0.7258064516129032,
+          "citation_accuracy": 0.25
+        },
+        "conflict": {
+          "accuracy": 0.984375,
+          "faithfulness": 1.0,
+          "citation_accuracy": 1.0
+        },
+        "hard_negative": {
+          "accuracy": 0.390625,
+          "faithfulness": 0.7421875,
+          "citation_accuracy": 0.16666666666666666
+        },
+        "boundary": {
+          "accuracy": 0.984375,
+          "faithfulness": 0.96875,
+          "citation_accuracy": 0.8984375
+        },
+        "noise": {
+          "accuracy": 1.0,
+          "faithfulness": 1.0,
+          "citation_accuracy": 1.0
+        },
+        "evidence_position": {
+          "accuracy": 0.9842931937172775,
+          "faithfulness": 0.9894179894179894,
+          "citation_accuracy": 0.9895833333333334
+        }
+      },
+      "failure_behavior": {
+        "MAR": 0.671875,
+        "CRS": 0.890625,
+        "HNR": 0.390625,
+        "NRS": 1.0158730158730158,
+        "BRS": 1.0,
+        "NoiseDrop": -0.015625,
+        "PositionDrop": -0.015625,
+        "position_accuracy": {
+          "first": 0.984375,
+          "middle": 0.9682539682539683,
+          "last": 1.0
+        }
+      },
+      "performance": {
+        "latency_ms": 1961.390625,
+        "input_tokens": 1107.670138888889,
+        "output_tokens": 44.267361111111114
+      },
+      "n": {
+        "clean": 64,
+        "missing_evidence": 64,
+        "conflict": 64,
+        "hard_negative": 64,
+        "boundary": 64,
+        "noise": 64,
+        "evidence_position": 192
+      }
+    },
+    "nova": {
+      "clean": {
+        "accuracy": 0.984375,
+        "relevance": 0.9765625,
+        "faithfulness": 0.96875,
+        "citation_accuracy": 0.9841269841269841
+      },
+      "failure_accuracy": {
+        "missing_evidence": 0.640625,
+        "conflict": 0.78125,
+        "hard_negative": 0.84375,
+        "boundary": 0.96875,
+        "noise": 1.0,
+        "evidence_position": 0.9947916666666666
+      },
+      "failure_metrics": {
+        "missing_evidence": {
+          "accuracy": 0.640625,
+          "faithfulness": 0.671952380952381,
+          "citation_accuracy": 0.13043478260869565
+        },
+        "conflict": {
+          "accuracy": 0.78125,
+          "faithfulness": 0.8984375,
+          "citation_accuracy": 0.875
+        },
+        "hard_negative": {
+          "accuracy": 0.84375,
+          "faithfulness": 0.85,
+          "citation_accuracy": 0.047619047619047616
+        },
+        "boundary": {
+          "accuracy": 0.96875,
+          "faithfulness": 0.9609375,
+          "citation_accuracy": 0.859375
+        },
+        "noise": {
+          "accuracy": 1.0,
+          "faithfulness": 1.0,
+          "citation_accuracy": 1.0
+        },
+        "evidence_position": {
+          "accuracy": 0.9947916666666666,
+          "faithfulness": 0.9921875,
+          "citation_accuracy": 0.9947916666666666
+        }
+      },
+      "failure_behavior": {
+        "MAR": 0.640625,
+        "CRS": 0.71875,
+        "HNR": 0.84375,
+        "NRS": 1.0158730158730158,
+        "BRS": 0.9841269841269841,
+        "NoiseDrop": -0.015625,
+        "PositionDrop": -0.015625,
+        "position_accuracy": {
+          "first": 0.984375,
+          "middle": 1.0,
+          "last": 1.0
+        }
+      },
+      "performance": {
+        "latency_ms": 3278.394097222222,
+        "input_tokens": 1093.828125,
+        "output_tokens": 39.604166666666664
+      },
+      "n": {
+        "clean": 64,
+        "missing_evidence": 64,
+        "conflict": 64,
+        "hard_negative": 64,
+        "boundary": 64,
+        "noise": 64,
+        "evidence_position": 192
+      }
+    },
+    "qwen": {
+      "clean": {
+        "accuracy": 0.984375,
+        "relevance": 1.0,
+        "faithfulness": 0.984375,
+        "citation_accuracy": 0.984375
+      },
+      "failure_accuracy": {
+        "missing_evidence": 0.78125,
+        "conflict": 0.953125,
+        "hard_negative": 0.9375,
+        "boundary": 0.953125,
+        "noise": 0.96875,
+        "evidence_position": 1.0
+      },
+      "failure_metrics": {
+        "missing_evidence": {
+          "accuracy": 0.78125,
+          "faithfulness": 0.8203125,
+          "citation_accuracy": 0.16666666666666666
+        },
+        "conflict": {
+          "accuracy": 0.953125,
+          "faithfulness": 0.9444444444444444,
+          "citation_accuracy": 0.9375
+        },
+        "hard_negative": {
+          "accuracy": 0.9375,
+          "faithfulness": 0.921875,
+          "citation_accuracy": 0.5
+        },
+        "boundary": {
+          "accuracy": 0.953125,
+          "faithfulness": 0.953125,
+          "citation_accuracy": 0.9523809523809523
+        },
+        "noise": {
+          "accuracy": 0.96875,
+          "faithfulness": 0.96875,
+          "citation_accuracy": 0.9841269841269841
+        },
+        "evidence_position": {
+          "accuracy": 1.0,
+          "faithfulness": 1.0,
+          "citation_accuracy": 1.0
+        }
+      },
+      "failure_behavior": {
+        "MAR": 0.78125,
+        "CRS": 0.765625,
+        "HNR": 0.9375,
+        "NRS": 0.9841269841269841,
+        "BRS": 0.9682539682539683,
+        "NoiseDrop": 0.015625,
+        "PositionDrop": 0.0,
+        "position_accuracy": {
+          "first": 1.0,
+          "middle": 1.0,
+          "last": 1.0
+        }
+      },
+      "performance": {
+        "latency_ms": 1425.029513888889,
+        "input_tokens": 1126.9130434782608,
+        "output_tokens": 40.36347826086956
+      },
+      "n": {
+        "clean": 64,
+        "missing_evidence": 64,
+        "conflict": 64,
+        "hard_negative": 64,
+        "boundary": 64,
+        "noise": 64,
+        "evidence_position": 192
+      }
+    }
+  },
+  "parse_rates": {
+    "deepseek": 1.0,
+    "gpt_oss": 0.9704861111111112,
+    "llama": 0.9288194444444444,
+    "nova": 1.0,
+    "qwen": 0.9982638888888888
+  },
+  "error_rates": {
+    "deepseek": 0.0,
+    "gpt_oss": 0.0,
+    "llama": 0.0,
+    "nova": 0.0,
+    "qwen": 0.0
+  },
+  "judge_stats": {
+    "n_judged": 2880,
+    "agreement_rate": 0.8145833333333333,
+    "human_review_rate": 0.18541666666666667
+  }
+}
